@@ -1,0 +1,11 @@
+{
+  "author": "",
+  "name": "twitter-follower-cleaner",
+  "version": "0.0.0",
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
