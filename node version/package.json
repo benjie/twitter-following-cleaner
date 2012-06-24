@@ -2,7 +2,10 @@
   "author": "",
   "name": "twitter-follower-cleaner",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "async":"0.1.22",
+    "request":"2.9.202"
+    },
   "devDependencies": {},
   "optionalDependencies": {},
   "engines": {
