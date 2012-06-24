@@ -84,7 +84,7 @@ function show () {
 
   // Append a person to #output
   jQuery.each(following, function (i, person) {
-    person.status = (person.status) ? person.status.created_at : 'No status (latest tweet) found';
+    person.last_update = (person.status) ? person.status.created_at : 'No status (latest tweet) found';
     output.append(tim(personTemplate, person));
   });
 
