@@ -80,7 +80,7 @@ function buildFollowing () {
 
 function show () {
   var output = jQuery('#output'),
-      personTemplate = "<div class='person'><ul><li><img src='{{https://si0.twimg.com/profile_images/1559797084/newprofile3_normal.jpg}}' alt='{{screen_name}}'></li><li>{{screen_name}}</li><li>{{last_update}}</li></ul></div>";
+      personTemplate = "<div class='person'><ul><li><img src='{{profile_image_url_https}}' alt='{{screen_name}}'></li><li>{{screen_name}}</li><li>{{last_update}}</li></ul></div>";
 
   // Append a person to #output
   jQuery.each(following, function (i, person) {
