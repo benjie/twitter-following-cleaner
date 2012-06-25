@@ -32,6 +32,7 @@ function start () {
 
   ids = following = [];
   jQuery('#output').empty();
+  jQuery('#message').empty();
 
   // Get all following ids then get their full user objects
   // (does not account for pagination)
