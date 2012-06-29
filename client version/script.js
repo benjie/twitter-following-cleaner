@@ -12,14 +12,14 @@ var ids,
 
 // API urls
 
-function getUser (obj) {
-  var params = (obj.screenName) ? 'screen_name=' + obj.screenName : 'user_id=' + obj.userid;
-  return 'https://api.twitter.com/1/users/show.json?' + params + '&callback=?';
+function getUsersByIds (obj) {
+  var params = 'user_id=' + obj.userids.join(",");
+  return 'https://api.twitter.com/1/users/lookup.json?' + params + '&callback=?';
 }
 
 function getFollowing (obj) {
   var params = (obj.screenName) ? 'screen_name=' + obj.screenName : 'user_id=' + obj.userid;
-  return 'https://api.twitter.com/1/following/ids.json?' + params + '&callback=?';
+  return 'https://api.twitter.com/1/friends/ids.json?' + params + '&callback=?';
 }
 
 // start() is called from the html button.
@@ -39,6 +39,7 @@ function start () {
 
   jQuery.getJSON(getFollowing({screenName: screenName}), function (data) {
     ids = data.ids;
+    message(screenName+' is following '+ids.length+' user'+(ids.length == 1 ? "" : "s"));
   })
   .then(buildFollowing);
 }
@@ -52,8 +53,11 @@ function buildFollowing () {
 
   // Create queue object
   var q = async.queue(function (task, callback) {
-    jQuery.getJSON(getUser({userid: task.id}), function (data) {
-      following.push(data);
+    jQuery.getJSON(getUsersByIds({userids: task.ids}), function (data) {
+      for (var i = 0, l = data.length; i < l; i++) {
+        following.push(data[i]);
+      }
+      message('Fetched '+following.length+'/'+ids.length+' users');
       callback();
     })
     .error(function () {
@@ -69,11 +73,11 @@ function buildFollowing () {
   }
 
   // Push to queue
-  jQuery.each(ids, function (i, id) {
-    q.push({id: id}, function () {
-      console.log('Fetched ' + id);
-    });
-  });
+  toFetch = ids.slice();
+  while (toFetch.length > 0) {
+    batch = toFetch.splice(0,Math.min(100,toFetch.length));
+    q.push({ids: batch}, function () {});
+  }
 }
 
 
