@@ -80,16 +80,54 @@ function buildFollowing () {
   }
 }
 
+function s(n) {
+  return n == 1 ? "" : "s";
+}
 
+function since(ts) {
+  if (ts < 1000000) {
+    return "never";
+  }
+  now = new Date().getTime();
+  diff = now - ts;
+  diff = Math.floor(diff/1000);
+  seconds = diff % 60;
+  diff = Math.floor(diff/60);
+  minutes = diff % 60;
+  diff = Math.floor(diff/60);
+  hours = diff % 24;
+  diff = Math.floor(diff/24);
+  days = diff;
+
+  if (days > 0) {
+    return days+" day"+s(days)+", "+hours+"hour"+s(hours);
+  } else if (hours > 0) {
+    return hours+" hour"+s(hours)+", "+minutes+"minute"+s(minutes);
+  } else {
+    return minutes+" minute"+s(minutes)+", "+seconds+"second"+s(seconds);
+  }
+}
 // GUI Feedback
 
 function show () {
   var output = jQuery('#output'),
-      personTemplate = "<div class='person'><ul><li><img src='{{profile_image_url_https}}' alt='{{screen_name}}'></li><li>{{screen_name}}</li><li>{{last_update}}</li></ul></div>";
+      personTemplate = "<div class='person'><ul><li><img src='{{profile_image_url_https}}' alt='{{screen_name}}'></li><li><a href='http://twitter.com/{{screen_name}}'>{{screen_name}}</a></li><li>{{last_update}} ({{time_since}})</li></ul></div>";
 
+  jQuery.each(following, function (i, person) {
+    person.timestamp = person.status ? Date.parse(person.status.created_at) : 0;
+  });
+  following.sort(function(a,b){
+    return a.timestamp - b.timestamp;
+  });
   // Append a person to #output
   jQuery.each(following, function (i, person) {
-    person.last_update = (person.status) ? person.status.created_at : 'No status (latest tweet) found';
+    if (person.status) {
+      person.last_update = person.status.created_at;
+      person.time_since = since(person.timestamp);
+    } else {
+      person.last_update = 'No status (latest tweet) found';
+      person.time_since = "never";
+    }
     output.append(tim(personTemplate, person));
   });
 
